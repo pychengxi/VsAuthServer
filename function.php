@@ -60,3 +60,37 @@ function require_cache($filename) {
 function getArrFromEncodedStr($str){
 	return json_decode(VsEncode::decode($str),true);
 }
+define('VS_ERR_REQUEST_METHOD_NOT_ALLOWED',0);
+define('VS_ERR_POST_CMDTAG_NOT_FOUND',1);
+define('VS_ERR_CMD_CMDTAG_NOT_FOUND',2);
+define('VS_ERR_CMD_KEYTAG_NOT_FOUND',3);
+function getPostCmd(){
+	if (!isset($_POST[C('CMD_TAG')])){
+		throw new PostError(VS_ERR_CMDTAG_NOT_FOUND);
+	}
+	return getArrFromEncodedStr($_POST[C('CMD_TAG')]);
+}
+
+function getInfoFromCmdInfo($cmdArr){
+	if (!isset($cmdArr['cmd'])){
+		throw new PostError(VS_ERR_CMD_CMDTAG_NOT_FOUND);
+	}
+	if (!isset($cmdArr['key'])){
+		throw new PostError(VS_ERR_CMD_KEYTAG_NOT_FOUND);
+	}
+	if ($cmd['cmd'] == 'vsauth'){
+		return getArrFromEncodedStr($_POST[$cmd['key']]);
+	}else{
+		throw new PostError(VS_ERR_CMD_CMDTAG_NOT_FOUND);
+	}
+}
+
+function checkInfo($infoArr){
+	return true;
+}
+
+function checkRequestMethod(){
+	if (strtoupper($_SERVER['REQUEST_METHOD'])!=='POST'){
+		throw new PostError(VS_ERR_REQUEST_METHOD_NOT_ALLOWED);
+	}
+}

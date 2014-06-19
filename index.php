@@ -1,10 +1,19 @@
 <?php
 require_cache('./function.php');
 require_cache('./Lib/VsEncode.class.php');
+require_cache('./Lib/Db.class.php');
 C(require './config.php');
-if (strtoupper($_SERVER['REQUEST_METHOD'])==='POST' && isset($_POST['cmd'])) {
-	$cmd=getArrFromEncodedStr($_POST['cmd']);
-	if (isset($cmd['cmd']) && isset($cmd['key']) && $cmd['cmd'] == 'vsauth'){
-		$info=getArrFromEncodedStr($_POST['key']);
-	}
+try {
+	checkRequestMethod();
+	$cmd=getPostCmd();
+	$info=getInfoFromCmdInfo();
+	checkInfo($info);
+	$model=new VsDb();
+	$model->getMachineByCode();
+}catch(PostError $e ){
+	#TODO:Log Error to database
+}
+if ( && isset($_POST['cmd'])) {
+	
+	
 }

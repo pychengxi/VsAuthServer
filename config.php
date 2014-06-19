@@ -1,4 +1,5 @@
 <?php
 return array(
-	'EncodeKey'=>'hashtest',
+	'ENCODE_KEY'=>'hashtest',
+	'CMD_TAG'=>'cmd',
 );
