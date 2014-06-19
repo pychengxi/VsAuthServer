@@ -56,3 +56,7 @@ function require_cache($filename) {
     }
     return $_importFiles[$filename];
 }
+
+function getArrFromEncodedStr($str){
+	return json_decode(VsEncode::decode($str),true);
+}
