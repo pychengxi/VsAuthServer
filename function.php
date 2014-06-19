@@ -1,4 +1,10 @@
 <?php
+define('VS_ERR_REQUEST_METHOD_NOT_ALLOWED',0);
+define('VS_ERR_POST_CMDTAG_NOT_FOUND',1);
+define('VS_ERR_CMD_CMDTAG_NOT_FOUND',2);
+define('VS_ERR_CMD_KEYTAG_NOT_FOUND',3);
+define('VS_LOGIN_SUCCESS',1001);
+define('VS_LOGIN_FAIL',1002);
 /**
  * 获取和设置配置参数 支持批量定义
  * @param string|array $name 配置变量
@@ -60,10 +66,7 @@ function require_cache($filename) {
 function getArrFromEncodedStr($str){
 	return json_decode(VsEncode::decrypt($str),true);
 }
-define('VS_ERR_REQUEST_METHOD_NOT_ALLOWED',0);
-define('VS_ERR_POST_CMDTAG_NOT_FOUND',1);
-define('VS_ERR_CMD_CMDTAG_NOT_FOUND',2);
-define('VS_ERR_CMD_KEYTAG_NOT_FOUND',3);
+
 function getPostCmd(){
 	if (!isset($_POST[C('CMD_TAG')])){
 		throw new PostError(VS_ERR_CMDTAG_NOT_FOUND);
@@ -99,7 +102,7 @@ function BuildSuccessResponse(){
 	$arr=array();
 	$arr[randString(4,4)]=mt_rand(-1000,-1);
 	$arr[randString(4,4)]=mt_rand(-1000,-1);
-	$arr['Fs3T']=1001;
+	$arr['Fs3T']=VS_LOGIN_SUCCESS;
 	$arr=shuffleAssoc($arr);
 	return VsEncode::encrypt(json_encode($arr));
 }
@@ -108,7 +111,7 @@ function BuildFailResponse(){
 	$arr=array();
 	$arr[randString(4,4)]=mt_rand(1,1000);
 	$arr[randString(4,4)]=mt_rand(1,1000);
-	$arr['Fs3T']=1002;
+	$arr['Fs3T']=VS_LOGIN_FAIL;
 	$arr=shuffleAssoc($arr);
 	return VsEncode::encrypt(json_encode($arr));
 }

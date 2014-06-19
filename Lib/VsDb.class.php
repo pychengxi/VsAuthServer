@@ -17,6 +17,9 @@ class VsDb{
 		}
 		return $r;
 	}
+	public function LogLogin(){
+		//TODO
+	}
 	public function query($sql){
 		if (!$this->dconnect){
 			$this->connect();
