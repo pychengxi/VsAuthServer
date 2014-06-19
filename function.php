@@ -58,7 +58,7 @@ function require_cache($filename) {
 }
 
 function getArrFromEncodedStr($str){
-	return json_decode(VsEncode::decode($str),true);
+	return json_decode(VsEncode::decrypt($str),true);
 }
 define('VS_ERR_REQUEST_METHOD_NOT_ALLOWED',0);
 define('VS_ERR_POST_CMDTAG_NOT_FOUND',1);
@@ -93,4 +93,74 @@ function checkRequestMethod(){
 	if (strtoupper($_SERVER['REQUEST_METHOD'])!=='POST'){
 		throw new PostError(VS_ERR_REQUEST_METHOD_NOT_ALLOWED);
 	}
+}
+
+function BuildSuccessResponse(){
+	$arr=array();
+	$arr[randString(4,4)]=mt_rand(-1000,-1);
+	$arr[randString(4,4)]=mt_rand(-1000,-1);
+	$arr['Fs3T']=1001;
+	$arr=shuffleAssoc($arr);
+	return VsEncode::encrypt(json_encode($arr));
+}
+
+function BuildFailResponse(){
+	$arr=array();
+	$arr[randString(4,4)]=mt_rand(1,1000);
+	$arr[randString(4,4)]=mt_rand(1,1000);
+	$arr['Fs3T']=1002;
+	$arr=shuffleAssoc($arr);
+	return VsEncode::encrypt(json_encode($arr));
+}
+
+function shuffleAssoc($array){
+	$newarr=array();
+	$count=count($array);
+	for ($i=0;$i<$count;++$i){
+		$randKey=array_rand($array);
+		
+		$newarr[$randKey]=$array[$randKey];
+		unset($array[$randKey]);
+	}
+	return $newarr;
+}
+
+/**
+ * 产生随机字串，可用来自动生成密码
+ * 默认长度6位 字母和数字混合 支持中文
+ * @param string $len 长度
+ * @param string $type 字串类型
+ * 0 字母 1 数字 其它 混合
+ * @param string $addChars 额外字符
+ * @return string
+ */
+function randString($len=6,$type='',$addChars='') {
+	$str ='';
+	switch($type) {
+		case 0:
+			$chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.$addChars;
+			break;
+		case 1:
+			$chars= str_repeat('0123456789',3);
+			break;
+		case 2:
+			$chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.$addChars;
+			break;
+		case 3:
+			$chars='abcdefghijklmnopqrstuvwxyz'.$addChars;
+			break;
+		case 4:
+			$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.$addChars;
+			break;
+		default :
+			// 默认去掉了容易混淆的字符oOLl和数字01，要添加请使用addChars参数
+			$chars='ABCDEFGHIJKMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789'.$addChars;
+			break;
+	}
+	if($len>10 ) {//位数过长重复字符串一定次数
+		$chars= $type==1? str_repeat($chars,$len) : str_repeat($chars,5);
+	}
+	$chars   =   str_shuffle($chars);
+	$str     =   substr($chars,0,$len);
+	return $str;
 }
