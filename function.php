@@ -47,7 +47,7 @@ function C($name=null, $value=null) {
 function require_cache($filename) {
     static $_importFiles = array();
     if (!isset($_importFiles[$filename])) {
-        if (file_exists_case($filename)) {
+        if (file_exists($filename)) {
             require $filename;
             $_importFiles[$filename] = true;
         } else {

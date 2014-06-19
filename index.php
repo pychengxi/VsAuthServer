@@ -1,19 +1,22 @@
 <?php
-require_cache('./function.php');
+require('./function.php');
 require_cache('./Lib/VsEncode.class.php');
-require_cache('./Lib/Db.class.php');
+require_cache('./Lib/VsMachine.class.php');
+require_cache('./Lib/VsDb.class.php');
 C(require './config.php');
+$model   = new VsDb();
 try {
 	checkRequestMethod();
-	$cmd=getPostCmd();
-	$info=getInfoFromCmdInfo();
+	$cmd     = getPostCmd();
+	$info    = getInfoFromCmdInfo();
 	checkInfo($info);
-	$model=new VsDb();
-	$model->getMachineByCode();
+	$info['MachineCode']='JW28DCHI2OCSKJWI8CUOAOJFKHKHOIHDSDHKN';
+	$machine = $model->getMachineByCode($info['MachineCode']);
+	if ($machine->exist() && $machine->CanLogin()){
+		echo BuildSuccessResponse()->getStr();
+	}else{
+		echo BuildFailResponse()->getStr();
+	}
 }catch(PostError $e ){
-	#TODO:Log Error to database
-}
-if ( && isset($_POST['cmd'])) {
-	
-	
+	Display404Page();
 }
