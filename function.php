@@ -164,3 +164,10 @@ function randString($len=6,$type='',$addChars='') {
 	$str     =   substr($chars,0,$len);
 	return $str;
 }
+
+function Display404Page(){
+	ob_clean();
+	header('HTTP/1.1 404 Not Found');
+	header("Status: 404 Not Found");
+	require '404.html';
+}
