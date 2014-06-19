@@ -30,7 +30,6 @@ class VsDb{
 				$this->escape($var).', '.
 				$this->escape($tag).', '.
 				time().')';
-		echo $sql;
 		$this->query($sql);
 	}
 	public function escape($str){
