@@ -5,7 +5,7 @@ class VsDb{
 		if (!$this->dconnect){
 			$this->connect();
 		}
-		$res = $this->query('SELECT * FROM `'.C('DB_EXT').'machine` WHERE `MachineCode`=\''.mysql_real_escape_string($code).'\' LIMIT 1');
+		$res = $this->query('SELECT `MachineCode`,`Open` FROM `'.C('DB_EXT').'machine` WHERE `MachineCode`='.$this->escape($code).' LIMIT 1');
 		$ret = mysql_fetch_assoc($res);
 		$r   = new VsMachine();
 		if (!$ret){
@@ -17,8 +17,24 @@ class VsDb{
 		}
 		return $r;
 	}
-	public function LogLogin(){
-		//TODO
+	public function LogLogin($code,$var=array(),$tag=''){
+		$ip=get_client_ip();
+		$ip=serialize($ip);
+		$var=serialize($var);
+		$sql='INSERT INTO `'.
+				C('DB_EXT').'log` '.
+				'(`id`, `ip`, `code`, `var`, `tag`, `time`) VALUES '.
+				'(NULL, '.
+				$this->escape($ip).', '.
+				(int)$code.', '.
+				$this->escape($var).', '.
+				$this->escape($tag).', '.
+				time().')';
+		echo $sql;
+		$this->query($sql);
+	}
+	public function escape($str){
+		return '\''.addslashes($str).'\'';
 	}
 	public function query($sql){
 		if (!$this->dconnect){

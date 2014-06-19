@@ -1,5 +1,5 @@
 <?php
-define('VS_ERR_REQUEST_METHOD_NOT_ALLOWED',0);
+define('VS_ERR_REQUEST_METHOD_NOT_ALLOWED',4);
 define('VS_ERR_POST_CMDTAG_NOT_FOUND',1);
 define('VS_ERR_CMD_CMDTAG_NOT_FOUND',2);
 define('VS_ERR_CMD_KEYTAG_NOT_FOUND',3);
@@ -173,4 +173,23 @@ function Display404Page(){
 	header('HTTP/1.1 404 Not Found');
 	header("Status: 404 Not Found");
 	require '404.html';
+}
+/**
+ * 获取客户端IP地址
+ * @param integer $type 返回类型 0 返回IP地址 1 返回IPV4地址数字
+ * @return mixed
+ */
+function get_client_ip() {
+	$ip=array();
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $arr    =   explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $pos    =   array_search('unknown',$arr);
+        if(false !== $pos) unset($arr[$pos]);
+        $ip[0]     =   trim($arr[0]);
+    }elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip[1]     =   $_SERVER['HTTP_CLIENT_IP'];
+    }elseif (isset($_SERVER['REMOTE_ADDR'])) {
+        $ip[2]     =   $_SERVER['REMOTE_ADDR'];
+    }
+    return $ip;
 }
